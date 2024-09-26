@@ -1,3 +1,5 @@
+import 'package:attendance_checker/screens/auth/login_page.dart';
+import 'package:attendance_checker/widgets/logout_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
 
@@ -30,28 +32,11 @@ class DrawerWidget extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(2.5),
                     child: Image.asset(
-                      'assets/images/RTA logo 1.png',
+                      'assets/images/logo.png',
                       height: 35,
                     ),
                   ),
                 ),
-                TextWidget(
-                  text: 'Zuc Ram Jr.',
-                  fontFamily: 'Bold',
-                  fontSize: 16,
-                ),
-                Builder(builder: (context) {
-                  return IconButton(
-                    onPressed: () {
-                      Scaffold.of(context).closeDrawer();
-                    },
-                    icon: Icon(
-                      Icons.menu,
-                      color: primary,
-                      size: 32,
-                    ),
-                  );
-                }),
               ],
             ),
             const SizedBox(
@@ -63,14 +48,31 @@ class DrawerWidget extends StatelessWidget {
                 //     builder: (context) => const HomeScreen()));
               },
               title: TextWidget(
-                text: 'Help',
+                text: 'How it Works?',
                 fontSize: 14,
                 fontFamily: 'Bold',
               ),
             ),
             ListTile(
               title: TextWidget(
-                text: 'About iParkPatrol',
+                text: 'About Us',
+                fontSize: 14,
+                fontFamily: 'Bold',
+              ),
+            ),
+            ListTile(
+              title: TextWidget(
+                text: 'Contact Us',
+                fontSize: 14,
+                fontFamily: 'Bold',
+              ),
+            ),
+            ListTile(
+              onTap: () {
+                logout(context, const LoginPage());
+              },
+              title: TextWidget(
+                text: 'Logout',
                 fontSize: 14,
                 fontFamily: 'Bold',
               ),
