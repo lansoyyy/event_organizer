@@ -1,3 +1,5 @@
+import 'package:attendance_checker/screens/clients_screen.dart';
+import 'package:attendance_checker/screens/event_organizer_page.dart';
 import 'package:attendance_checker/screens/profile_screen.dart';
 import 'package:attendance_checker/widgets/button_widget.dart';
 import 'package:attendance_checker/widgets/drawer_widget.dart';
@@ -56,7 +58,12 @@ class HomeScreen extends StatelessWidget {
             Center(
               child: ButtonWidget(
                 label: 'Event Organizer',
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const EventOrganizerPage()),
+                  );
+                },
               ),
             ),
             const SizedBox(
@@ -65,7 +72,12 @@ class HomeScreen extends StatelessWidget {
             Center(
               child: ButtonWidget(
                 label: 'Client Users',
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const ClientsPage()),
+                  );
+                },
               ),
             ),
             const SizedBox(
