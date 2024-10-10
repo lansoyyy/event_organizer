@@ -1,3 +1,4 @@
+import 'package:attendance_checker/screens/chat_screen.dart';
 import 'package:attendance_checker/screens/clients_screen.dart';
 import 'package:attendance_checker/screens/event_organizer_page.dart';
 import 'package:attendance_checker/screens/profile_screen.dart';
@@ -87,7 +88,12 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const ChatScreen()),
+                    );
+                  },
                   icon: const Icon(
                     Icons.message,
                     color: Colors.white,
