@@ -5,16 +5,26 @@ import 'package:attendance_checker/widgets/textfield_widget.dart';
 import 'package:flutter/material.dart';
 
 class ClientProfileScreen extends StatefulWidget {
-  const ClientProfileScreen({super.key});
+  dynamic data;
+  ClientProfileScreen({super.key, required this.data});
 
   @override
   State<ClientProfileScreen> createState() => _ClientProfileScreenState();
 }
 
 class _ClientProfileScreenState extends State<ClientProfileScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      username.text = widget.data['name'];
+      email.text = widget.data['email'];
+    });
+  }
+
   final username = TextEditingController();
   final email = TextEditingController();
-  final number = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +69,7 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
               ),
               Center(
                 child: Image.asset(
-                  'assets/images/12111 1.png',
+                  'assets/images/profile.png',
                   width: 150,
                 ),
               ),
@@ -79,15 +89,6 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
                 child: TextFieldWidget(
                   label: 'Email',
                   controller: email,
-                  enabled: false,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: TextFieldWidget(
-                  label: 'Phone Number',
-                  controller: number,
-                  inputType: TextInputType.number,
                   enabled: false,
                 ),
               ),

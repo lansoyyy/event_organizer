@@ -1,6 +1,7 @@
 import 'package:attendance_checker/screens/client_profile_page.dart';
 import 'package:attendance_checker/screens/profile_screen.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ClientsPage extends StatelessWidget {
@@ -28,43 +29,67 @@ class ClientsPage extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Card(
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => const ClientProfileScreen()),
-                      );
-                    },
-                    leading: SizedBox(
-                      width: 300,
-                      height: 150,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.account_circle,
-                            size: 50,
+          child: StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('Users').snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return const Center(child: Text('Error'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
+                  );
+                }
+
+                final data = snapshot.requireData;
+                return ListView.builder(
+                  itemCount: data.docs.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Card(
+                        child: ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => ClientProfileScreen(
+                                        data: data.docs[index],
+                                      )),
+                            );
+                          },
+                          leading: SizedBox(
+                            width: 300,
+                            height: 150,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.account_circle,
+                                  size: 50,
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                TextWidget(
+                                  text: data.docs[index]['name'],
+                                  fontSize: 18,
+                                  fontFamily: 'Bold',
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          TextWidget(
-                            text: 'John Doe',
-                            fontSize: 18,
-                            fontFamily: 'Bold',
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          )),
+                    );
+                  },
+                );
+              })),
     );
   }
 }

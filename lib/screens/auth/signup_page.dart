@@ -142,7 +142,7 @@ class _SignupPageState extends State<SignupPage> {
       //     emailController.text);
 
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
       showToast("Registered Successfully!");
 
