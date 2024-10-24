@@ -1,8 +1,15 @@
+import 'package:attendance_checker/firebase_options.dart';
 import 'package:attendance_checker/screens/auth/landing_screen.dart';
 import 'package:attendance_checker/screens/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    name: 'event-organizer-61675',
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

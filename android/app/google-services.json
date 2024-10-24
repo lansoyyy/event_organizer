@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "899944753416",
+    "project_id": "event-organizer-61675",
+    "storage_bucket": "event-organizer-61675.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:899944753416:android:df7a39f08a16d8dabce4bd",
+        "android_client_info": {
+          "package_name": "com.example.attendance_checker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOaTeif7gX4xYZDAp35BHgqf-7jSQkpzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
