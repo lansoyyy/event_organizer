@@ -1,8 +1,11 @@
 import 'package:attendance_checker/screens/auth/login_page.dart';
 import 'package:attendance_checker/screens/home_screen.dart';
+import 'package:attendance_checker/services/add_user.dart';
 import 'package:attendance_checker/widgets/button_widget.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
 import 'package:attendance_checker/widgets/textfield_widget.dart';
+import 'package:attendance_checker/widgets/toast_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
@@ -14,6 +17,7 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final username = TextEditingController();
+  final email = TextEditingController();
   final password = TextEditingController();
   final cpassword = TextEditingController();
   @override
@@ -50,8 +54,13 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 TextFieldWidget(
                   hintColor: Colors.white,
-                  label: 'Username',
+                  label: 'User name',
                   controller: username,
+                ),
+                TextFieldWidget(
+                  hintColor: Colors.white,
+                  label: 'Email',
+                  controller: email,
                 ),
                 TextFieldWidget(
                   hintColor: Colors.white,
@@ -75,10 +84,11 @@ class _SignupPageState extends State<SignupPage> {
                     color: Colors.green[800]!,
                     label: 'Signup',
                     onPressed: () {
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
-                      );
+                      if (password.text != cpassword.text) {
+                        showToast('Password do not match');
+                      } else {
+                        register(context);
+                      }
                     },
                   ),
                 ),
@@ -88,7 +98,7 @@ class _SignupPageState extends State<SignupPage> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.of(context).pushReplacement(
+                      Navigator.of(context).push(
                         MaterialPageRoute(
                             builder: (context) => const LoginPage()),
                       );
@@ -119,5 +129,36 @@ class _SignupPageState extends State<SignupPage> {
         ),
       ),
     );
+  }
+
+  register(context) async {
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email.text, password: password.text);
+
+      addUser(username.text, email.text);
+
+      // signup(nameController.text, numberController.text, addressController.text,
+      //     emailController.text);
+
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
+      showToast("Registered Successfully!");
+
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        showToast('The password provided is too weak.');
+      } else if (e.code == 'email-already-in-use') {
+        showToast('The account already exists for that email.');
+      } else if (e.code == 'invalid-email') {
+        showToast('The email address is not valid.');
+      } else {
+        showToast(e.toString());
+      }
+    } on Exception catch (e) {
+      showToast("An error occurred: $e");
+    }
   }
 }
