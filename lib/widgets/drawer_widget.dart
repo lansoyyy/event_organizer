@@ -26,21 +26,19 @@ class DrawerWidget extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                      border: Border.all(color: primary!),
-                      shape: BoxShape.circle,
-                      color: Colors.white),
+                      border: Border.all(color: primary!), color: Colors.white),
                   child: Padding(
                     padding: const EdgeInsets.all(2.5),
                     child: Image.asset(
                       'assets/images/logo.png',
-                      height: 35,
+                      height: 75,
                     ),
                   ),
                 ),
               ],
             ),
             const SizedBox(
-              height: 50,
+              height: 30,
             ),
             ListTile(
               onTap: () {

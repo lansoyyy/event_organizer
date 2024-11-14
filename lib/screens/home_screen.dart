@@ -82,41 +82,18 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: 50,
+              height: 20,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const ChatScreen()),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.message,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                ),
-                const SizedBox(
-                  width: 50,
-                ),
-                IconButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                          builder: (context) => const ProfileScreen()),
-                    );
-                  },
-                  icon: const Icon(
-                    Icons.account_circle,
-                    color: Colors.white,
-                    size: 50,
-                  ),
-                ),
-              ],
+            Center(
+              child: ButtonWidget(
+                label: 'My Profile',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const ProfileScreen()),
+                  );
+                },
+              ),
             ),
           ],
         ),
