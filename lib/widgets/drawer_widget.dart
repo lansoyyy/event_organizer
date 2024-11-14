@@ -1,4 +1,7 @@
 import 'package:attendance_checker/screens/auth/login_page.dart';
+import 'package:attendance_checker/screens/pages/about_us_page.dart';
+import 'package:attendance_checker/screens/pages/contact_us_page.dart';
+import 'package:attendance_checker/screens/pages/how_it_works_page.dart';
 import 'package:attendance_checker/widgets/logout_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
@@ -42,8 +45,8 @@ class DrawerWidget extends StatelessWidget {
             ),
             ListTile(
               onTap: () {
-                // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                //     builder: (context) => const HomeScreen()));
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const HowItWorksPage()));
               },
               title: TextWidget(
                 text: 'How it Works?',
@@ -52,6 +55,10 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             ListTile(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const AboutUsPage()));
+              },
               title: TextWidget(
                 text: 'About Us',
                 fontSize: 14,
@@ -59,6 +66,10 @@ class DrawerWidget extends StatelessWidget {
               ),
             ),
             ListTile(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const ContactUsPage()));
+              },
               title: TextWidget(
                 text: 'Contact Us',
                 fontSize: 14,
