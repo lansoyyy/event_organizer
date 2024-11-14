@@ -2,9 +2,11 @@ import 'package:attendance_checker/screens/chat_screen.dart';
 import 'package:attendance_checker/screens/clients_screen.dart';
 import 'package:attendance_checker/screens/event_organizer_page.dart';
 import 'package:attendance_checker/screens/profile_screen.dart';
+import 'package:attendance_checker/utils/const.dart';
 import 'package:attendance_checker/widgets/button_widget.dart';
 import 'package:attendance_checker/widgets/drawer_widget.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -22,12 +24,49 @@ class HomeScreen extends StatelessWidget {
         ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.notifications_none,
-            ),
-          ),
+          StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('Notifs')
+                  .where('id', isEqualTo: userId)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  print(snapshot.error);
+                  return const Center(child: Text('Error'));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black,
+                    )),
+                  );
+                }
+
+                final data = snapshot.requireData;
+                return PopupMenuButton(
+                  icon: const Icon(Icons.notifications),
+                  itemBuilder: (context) {
+                    return [
+                      for (int i = 0; i < data.docs.length; i++)
+                        PopupMenuItem(
+                          child: ListTile(
+                            leading: const Icon(
+                              Icons.notifications,
+                              color: Colors.red,
+                            ),
+                            title: TextWidget(
+                              text: 'Someone has sent you a message!',
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                    ];
+                  },
+                );
+              })
         ],
       ),
       body: Container(

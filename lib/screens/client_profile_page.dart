@@ -1,4 +1,5 @@
 import 'package:attendance_checker/screens/chat_screen.dart';
+import 'package:attendance_checker/utils/const.dart';
 import 'package:attendance_checker/widgets/button_widget.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
 import 'package:attendance_checker/widgets/textfield_widget.dart';
@@ -40,7 +41,11 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
           IconButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const ChatScreen()),
+                MaterialPageRoute(
+                    builder: (context) => ChatScreen(
+                          currentUserId: userId,
+                          receiverId: widget.data.id,
+                        )),
               );
             },
             icon: const Icon(

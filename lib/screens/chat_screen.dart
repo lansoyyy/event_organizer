@@ -1,23 +1,41 @@
-import 'package:attendance_checker/utils/colors.dart';
-import 'package:attendance_checker/widgets/text_widget.dart';
+import 'package:attendance_checker/services/add_notif.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:attendance_checker/widgets/text_widget.dart';
+import 'package:attendance_checker/utils/colors.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final String currentUserId;
+  final String receiverId;
+
+  const ChatScreen({
+    super.key,
+    required this.currentUserId,
+    required this.receiverId,
+  });
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  final List<String> messages = [];
   final TextEditingController messageController = TextEditingController();
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  void sendMessage() {
+  // Send message to Firestore
+  void sendMessage() async {
     if (messageController.text.isNotEmpty) {
-      setState(() {
-        messages.add(messageController.text);
+      final message = messageController.text.trim();
+
+      await firestore.collection('chats').add({
+        'senderId': widget.currentUserId,
+        'receiverId': widget.receiverId,
+        'message': message,
+        'timestamp': FieldValue.serverTimestamp(),
       });
+
+      addNotif(widget.receiverId);
+
       messageController.clear();
     }
   }
@@ -35,78 +53,103 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: 500,
-            child: ListView.builder(
-              padding: const EdgeInsets.all(16.0),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                bool isMe = index % 2 == 0;
-                return Row(
-                  mainAxisAlignment:
-                      isMe ? MainAxisAlignment.start : MainAxisAlignment.end,
-                  children: [
-                    if (isMe)
-                      const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundImage: AssetImage('assets/avatar.png'),
-                        ),
-                      ),
-                    if (!isMe) const SizedBox(width: 40), // Space for alignment
-                    Expanded(
-                      child: Align(
-                        alignment:
-                            isMe ? Alignment.centerLeft : Alignment.centerRight,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 5.0),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 15.0),
-                          decoration: BoxDecoration(
-                            color: isMe
-                                ? Colors.blue[100]
-                                : Colors.greenAccent[100],
-                            borderRadius: BorderRadius.only(
-                              topLeft: const Radius.circular(20),
-                              topRight: const Radius.circular(20),
-                              bottomLeft: isMe
-                                  ? const Radius.circular(0)
-                                  : const Radius.circular(20),
-                              bottomRight: isMe
-                                  ? const Radius.circular(20)
-                                  : const Radius.circular(0),
+          Expanded(
+            child: StreamBuilder<QuerySnapshot>(
+              stream: firestore
+                  .collection('chats')
+                  .where('senderId', isEqualTo: widget.currentUserId)
+                  .where('receiverId', isEqualTo: widget.receiverId)
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  return const Center(child: Text('No messages yet.'));
+                }
+
+                final messages = snapshot.data!.docs;
+
+                return ListView.builder(
+                  reverse: true,
+                  padding: const EdgeInsets.all(16.0),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final data = messages[index].data() as Map<String, dynamic>;
+                    final isMe = data['senderId'] == widget.currentUserId;
+
+                    return Row(
+                      mainAxisAlignment: isMe
+                          ? MainAxisAlignment.start
+                          : MainAxisAlignment.end,
+                      children: [
+                        if (isMe)
+                          const Padding(
+                            padding: EdgeInsets.only(right: 10),
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundImage: AssetImage('assets/avatar.png'),
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                blurRadius: 5.0,
-                                offset: const Offset(0, 3),
+                          ),
+                        if (!isMe)
+                          const SizedBox(width: 40), // Space for alignment
+                        Expanded(
+                          child: Align(
+                            alignment: isMe
+                                ? Alignment.centerLeft
+                                : Alignment.centerRight,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 5.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 10.0, horizontal: 15.0),
+                              decoration: BoxDecoration(
+                                color: isMe
+                                    ? Colors.blue[100]
+                                    : Colors.greenAccent[100],
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(20),
+                                  topRight: const Radius.circular(20),
+                                  bottomLeft: isMe
+                                      ? const Radius.circular(0)
+                                      : const Radius.circular(20),
+                                  bottomRight: isMe
+                                      ? const Radius.circular(20)
+                                      : const Radius.circular(0),
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    blurRadius: 5.0,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          child: TextWidget(
-                            text: messages[index],
-                            fontSize: 16.0,
-                            isItalize: false,
-                            isBold: false,
-                            align: TextAlign.left,
-                            color: Colors.black87,
-                            fontFamily: 'Regular',
+                              child: TextWidget(
+                                text: data['message'],
+                                fontSize: 16.0,
+                                isItalize: false,
+                                isBold: false,
+                                align: TextAlign.left,
+                                color: Colors.black87,
+                                fontFamily: 'Regular',
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    if (!isMe)
-                      const Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: CircleAvatar(
-                          radius: 20,
-                          backgroundImage: AssetImage('assets/avatar.png'),
-                        ),
-                      ),
-                    if (isMe) const SizedBox(width: 40), // Space for alignment
-                  ],
+                        if (!isMe)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 10),
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundImage: AssetImage('assets/avatar.png'),
+                            ),
+                          ),
+                        if (isMe)
+                          const SizedBox(width: 40), // Space for alignment
+                      ],
+                    );
+                  },
                 );
               },
             ),
