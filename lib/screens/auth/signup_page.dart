@@ -1,6 +1,5 @@
 import 'package:attendance_checker/screens/admin/admin_home.dart';
 import 'package:attendance_checker/screens/auth/login_page.dart';
-import 'package:attendance_checker/screens/home_screen.dart';
 import 'package:attendance_checker/services/add_user.dart';
 import 'package:attendance_checker/widgets/button_widget.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
@@ -21,6 +20,8 @@ class _SignupPageState extends State<SignupPage> {
   final email = TextEditingController();
   final password = TextEditingController();
   final cpassword = TextEditingController();
+  final accname = TextEditingController();
+  final accnumber = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,6 +63,16 @@ class _SignupPageState extends State<SignupPage> {
                   hintColor: Colors.white,
                   label: 'Email',
                   controller: email,
+                ),
+                TextFieldWidget(
+                  hintColor: Colors.white,
+                  label: 'Account Name for Payment Method',
+                  controller: accname,
+                ),
+                TextFieldWidget(
+                  hintColor: Colors.white,
+                  label: 'Account Number for Payment Method',
+                  controller: accnumber,
                 ),
                 TextFieldWidget(
                   hintColor: Colors.white,
@@ -200,7 +211,7 @@ class _SignupPageState extends State<SignupPage> {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
 
-      addUser(username.text, email.text);
+      addUser(username.text, email.text, accname.text, accnumber.text);
 
       // signup(nameController.text, numberController.text, addressController.text,
       //     emailController.text);

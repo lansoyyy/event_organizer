@@ -1,9 +1,7 @@
 import 'package:attendance_checker/utils/const.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-
-Future addUser(name, email) async {
+Future addUser(name, email, accname, accnumber) async {
   final docUser = FirebaseFirestore.instance.collection('Users').doc(userId);
 
   final json = {
@@ -13,6 +11,8 @@ Future addUser(name, email) async {
     'isVerified': false,
     'events': [],
     'profile': '',
+    'accname': accname,
+    'accnumber': accnumber,
   };
 
   await docUser.set(json);

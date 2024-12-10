@@ -1,8 +1,8 @@
 import 'package:attendance_checker/services/add_notif.dart';
+import 'package:attendance_checker/utils/colors.dart';
+import 'package:attendance_checker/widgets/text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:attendance_checker/widgets/text_widget.dart';
-import 'package:attendance_checker/utils/colors.dart';
 
 class ChatScreen extends StatefulWidget {
   final String currentUserId;
@@ -50,6 +50,121 @@ class _ChatScreenState extends State<ChatScreen> {
           fontFamily: 'Bold',
         ),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                        title: const Text(
+                          'Terms and Condition',
+                          style: TextStyle(
+                              fontFamily: 'QBold', fontWeight: FontWeight.bold),
+                        ),
+                        content: const Text(
+                          'I agree with terms and conditions for confidential information',
+                          style: TextStyle(fontFamily: 'QRegular'),
+                        ),
+                        actions: <Widget>[
+                          MaterialButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text(
+                              'I Disagree',
+                              style: TextStyle(
+                                  fontFamily: 'QRegular',
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          MaterialButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                        title: const Text(
+                                          'Payment Method Details',
+                                          style: TextStyle(
+                                              fontFamily: 'QBold',
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        content: StreamBuilder<
+                                                DocumentSnapshot>(
+                                            stream: FirebaseFirestore.instance
+                                                .collection('Users')
+                                                .doc(widget.receiverId)
+                                                .snapshots(),
+                                            builder: (context,
+                                                AsyncSnapshot<DocumentSnapshot>
+                                                    snapshot) {
+                                              if (!snapshot.hasData) {
+                                                return const Center(
+                                                    child: Text('Loading'));
+                                              } else if (snapshot.hasError) {
+                                                return const Center(
+                                                    child: Text(
+                                                        'Something went wrong'));
+                                              } else if (snapshot
+                                                      .connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return const Center(
+                                                    child:
+                                                        CircularProgressIndicator());
+                                              }
+                                              dynamic data = snapshot.data;
+                                              return Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  Text(
+                                                    'Account Name: ${data['accname']}',
+                                                    style: const TextStyle(
+                                                        fontFamily: 'Bold',
+                                                        fontSize: 18),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text(
+                                                    'Account Number: ${data['accnumber']}',
+                                                    style: const TextStyle(
+                                                        fontFamily: 'Bold',
+                                                        fontSize: 18),
+                                                  ),
+                                                ],
+                                              );
+                                            }),
+                                        actions: <Widget>[
+                                          MaterialButton(
+                                            onPressed: () =>
+                                                Navigator.of(context).pop(true),
+                                            child: const Text(
+                                              'Close',
+                                              style: TextStyle(
+                                                  fontFamily: 'QRegular',
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ],
+                                      ));
+                            },
+                            child: const Text(
+                              'I Agree',
+                              style: TextStyle(
+                                  fontFamily: 'QRegular',
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ));
+            },
+            icon: const Icon(
+              Icons.payment,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
