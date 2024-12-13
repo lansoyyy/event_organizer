@@ -1,6 +1,5 @@
 import 'package:attendance_checker/screens/auth/login_page.dart';
 import 'package:attendance_checker/widgets/admin_drawer_widget.dart';
-import 'package:attendance_checker/widgets/drawer_widget.dart';
 import 'package:attendance_checker/widgets/logout_widget.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -70,48 +69,73 @@ class AdminusersScreen extends StatelessWidget {
 
                     final data = snapshot.requireData;
                     return Center(
-                      child: DataTable(columns: [
-                        DataColumn(
-                          label: TextWidget(
-                            text: 'ID',
-                            fontSize: 18,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextWidget(
-                            text: 'Name',
-                            fontSize: 18,
-                          ),
-                        ),
-                        DataColumn(
-                          label: TextWidget(
-                            text: 'Email',
-                            fontSize: 18,
-                          ),
-                        ),
-                      ], rows: [
-                        for (int i = 0; i < data.docs.length; i++)
-                          DataRow(cells: [
-                            DataCell(
-                              TextWidget(
-                                text: data.docs[i].id,
-                                fontSize: 14,
+                      child: SingleChildScrollView(
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(columns: [
+                            DataColumn(
+                              label: TextWidget(
+                                text: 'ID',
+                                fontSize: 18,
                               ),
                             ),
-                            DataCell(
-                              TextWidget(
-                                text: data.docs[i]['name'],
-                                fontSize: 14,
+                            DataColumn(
+                              label: TextWidget(
+                                text: 'Name',
+                                fontSize: 18,
                               ),
                             ),
-                            DataCell(
-                              TextWidget(
-                                text: data.docs[i]['email'],
-                                fontSize: 14,
+                            DataColumn(
+                              label: TextWidget(
+                                text: 'Email',
+                                fontSize: 18,
                               ),
                             ),
-                          ])
-                      ]),
+                            DataColumn(
+                              label: TextWidget(
+                                text: '',
+                                fontSize: 18,
+                              ),
+                            ),
+                          ], rows: [
+                            for (int i = 0; i < data.docs.length; i++)
+                              DataRow(cells: [
+                                DataCell(
+                                  TextWidget(
+                                    text: data.docs[i].id,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                DataCell(
+                                  TextWidget(
+                                    text: data.docs[i]['name'],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                DataCell(
+                                  TextWidget(
+                                    text: data.docs[i]['email'],
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                DataCell(
+                                  IconButton(
+                                    onPressed: () async {
+                                      await FirebaseFirestore.instance
+                                          .collection('Users')
+                                          .doc(data.docs[i].id)
+                                          .delete();
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ])
+                          ]),
+                        ),
+                      ),
                     );
                   })
             ],

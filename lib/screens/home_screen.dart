@@ -1,4 +1,3 @@
-import 'package:attendance_checker/screens/chat_screen.dart';
 import 'package:attendance_checker/screens/clients_screen.dart';
 import 'package:attendance_checker/screens/event_organizer_page.dart';
 import 'package:attendance_checker/screens/profile_screen.dart';
@@ -10,7 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  String type;
+
+  HomeScreen({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +102,9 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (context) => const EventOrganizerPage()),
+                        builder: (context) => EventOrganizerPage(
+                              type: type,
+                            )),
                   );
                 },
               ),
@@ -109,15 +112,18 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Center(
-              child: ButtonWidget(
-                label: 'Client Users',
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const ClientsPage()),
-                  );
-                },
+            Visibility(
+              visible: type == 'Organizer',
+              child: Center(
+                child: ButtonWidget(
+                  label: 'Client Users',
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => const ClientsPage()),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(
@@ -129,7 +135,9 @@ class HomeScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (context) => const ProfileScreen()),
+                        builder: (context) => ProfileScreen(
+                              type: type,
+                            )),
                   );
                 },
               ),

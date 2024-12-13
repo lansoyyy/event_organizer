@@ -8,7 +8,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+  String type;
+
+  ProfileScreen({super.key, required this.type});
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -113,16 +115,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Center(
-                      child: ButtonWidget(
-                        label: 'Event Organizer',
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    const EventOrganizerPage()),
-                          );
-                        },
+                    Visibility(
+                      visible: widget.type == 'Client',
+                      child: Center(
+                        child: ButtonWidget(
+                          label: 'Event Organizer',
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (context) => EventOrganizerPage(
+                                        type: widget.type,
+                                      )),
+                            );
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(

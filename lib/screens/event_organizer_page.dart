@@ -1,25 +1,31 @@
 import 'package:attendance_checker/screens/add_event_screen.dart';
+import 'package:attendance_checker/screens/pages/view_event_page.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class EventOrganizerPage extends StatelessWidget {
-  const EventOrganizerPage({super.key});
+  String type;
+
+  EventOrganizerPage({super.key, required this.type});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
+      floatingActionButton: Visibility(
+        visible: type == 'Organizer',
+        child: FloatingActionButton(
+          backgroundColor: Colors.blue,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const AddEventScreen()),
+            );
+          },
         ),
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => const AddEventScreen()),
-          );
-        },
       ),
       appBar: AppBar(
         title: TextWidget(
@@ -66,38 +72,49 @@ class EventOrganizerPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: Card(
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 125,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => ViewEventPage(
+                                    type: type,
+                                    data: data.docs[index],
+                                  )),
+                        );
+                      },
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 125,
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10),
+                                ),
+                                image: DecorationImage(
+                                  image: NetworkImage(data.docs[index]['img']),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
-                              image: DecorationImage(
-                                image: NetworkImage(data.docs[index]['img']),
-                                fit: BoxFit.cover,
-                              ),
+                              width: double.infinity,
                             ),
-                            width: double.infinity,
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          TextWidget(
-                            text: data.docs[index]['name'],
-                            fontSize: 18,
-                            fontFamily: 'Bold',
-                          ),
-                          TextWidget(
-                            text: data.docs[index]['date'],
-                            fontSize: 12,
-                            fontFamily: 'Regular',
-                            color: Colors.grey,
-                          ),
-                        ],
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            TextWidget(
+                              text: data.docs[index]['name'],
+                              fontSize: 18,
+                              fontFamily: 'Bold',
+                            ),
+                            TextWidget(
+                              text: data.docs[index]['date'],
+                              fontSize: 12,
+                              fontFamily: 'Regular',
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );

@@ -22,6 +22,8 @@ class _SignupPageState extends State<SignupPage> {
   final cpassword = TextEditingController();
   final accname = TextEditingController();
   final accnumber = TextEditingController();
+
+  bool isClient = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,6 +75,7 @@ class _SignupPageState extends State<SignupPage> {
                   hintColor: Colors.white,
                   label: 'Account Number for Payment Method',
                   controller: accnumber,
+                  inputType: TextInputType.number,
                 ),
                 TextFieldWidget(
                   hintColor: Colors.white,
@@ -87,6 +90,25 @@ class _SignupPageState extends State<SignupPage> {
                   controller: cpassword,
                   isObscure: true,
                   showEye: true,
+                ),
+                SwitchListTile(
+                  title: TextWidget(
+                    text: isClient ? "Client" : "Organizer",
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontFamily: 'Bold',
+                  ),
+                  subtitle: TextWidget(
+                    text: "Switch to select user type",
+                    fontSize: 12,
+                    color: Colors.black,
+                  ),
+                  value: isClient,
+                  onChanged: (bool value) {
+                    setState(() {
+                      isClient = value;
+                    });
+                  },
                 ),
                 const SizedBox(
                   height: 30,
@@ -211,7 +233,8 @@ class _SignupPageState extends State<SignupPage> {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
 
-      addUser(username.text, email.text, accname.text, accnumber.text);
+      addUser(username.text, email.text, accname.text, accnumber.text,
+          isClient ? 'Client' : 'Organizer');
 
       // signup(nameController.text, numberController.text, addressController.text,
       //     emailController.text);
