@@ -1,17 +1,17 @@
-import 'package:attendance_checker/screens/client_profile_page.dart';
+import 'package:attendance_checker/screens/event_organizer_page.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class ClientsPage extends StatelessWidget {
-  const ClientsPage({super.key});
-
+class OrganizerListPage extends StatelessWidget {
+  String type;
+  OrganizerListPage({super.key, required this.type});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: TextWidget(
-          text: 'CLIENTS',
+          text: 'Event Organizer',
           fontSize: 18,
           fontFamily: 'Bold',
         ),
@@ -31,7 +31,7 @@ class ClientsPage extends StatelessWidget {
           child: StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('Users')
-                  .where('type', isNotEqualTo: 'Organizer')
+                  .where('type', isEqualTo: 'Organizer')
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -60,8 +60,9 @@ class ClientsPage extends StatelessWidget {
                           onTap: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                  builder: (context) => ClientProfileScreen(
-                                        data: data.docs[index],
+                                  builder: (context) => EventOrganizerPage(
+                                        type: type,
+                                        id: data.docs[index].id,
                                       )),
                             );
                           },

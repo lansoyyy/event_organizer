@@ -116,7 +116,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 20,
                     ),
                     Visibility(
-                      visible: widget.type == 'Client',
+                      visible: widget.type == 'Organizer',
                       child: Center(
                         child: ButtonWidget(
                           label: 'Event Organizer',
@@ -124,6 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (context) => EventOrganizerPage(
+                                        id: userId,
                                         type: widget.type,
                                       )),
                             );

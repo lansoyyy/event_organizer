@@ -1,5 +1,5 @@
 import 'package:attendance_checker/screens/clients_screen.dart';
-import 'package:attendance_checker/screens/event_organizer_page.dart';
+import 'package:attendance_checker/screens/organizer_list_page.dart';
 import 'package:attendance_checker/screens/profile_screen.dart';
 import 'package:attendance_checker/utils/const.dart';
 import 'package:attendance_checker/widgets/button_widget.dart';
@@ -96,17 +96,20 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(
               height: 50,
             ),
-            Center(
-              child: ButtonWidget(
-                label: 'Event Organizer',
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => EventOrganizerPage(
-                              type: type,
-                            )),
-                  );
-                },
+            Visibility(
+              visible: type != 'Organizer',
+              child: Center(
+                child: ButtonWidget(
+                  label: 'Event Organizer',
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => OrganizerListPage(
+                                type: type,
+                              )),
+                    );
+                  },
+                ),
               ),
             ),
             const SizedBox(

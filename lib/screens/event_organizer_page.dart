@@ -6,8 +6,9 @@ import 'package:flutter/material.dart';
 
 class EventOrganizerPage extends StatelessWidget {
   String type;
+  String id;
 
-  EventOrganizerPage({super.key, required this.type});
+  EventOrganizerPage({super.key, required this.type, required this.id});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,10 @@ class EventOrganizerPage extends StatelessWidget {
           ),
         ),
         child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection('Events').snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection('Events')
+                .where('uid', isEqualTo: id)
+                .snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.hasError) {
