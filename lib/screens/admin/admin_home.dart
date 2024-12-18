@@ -1,6 +1,5 @@
 import 'package:attendance_checker/screens/auth/login_page.dart';
 import 'package:attendance_checker/widgets/admin_drawer_widget.dart';
-import 'package:attendance_checker/widgets/drawer_widget.dart';
 import 'package:attendance_checker/widgets/logout_widget.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,6 +45,7 @@ class AdminHome extends StatelessWidget {
                   StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
                           .collection('Users')
+                          .where('type', isNotEqualTo: 'Organizer')
                           .snapshots(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -105,7 +105,8 @@ class AdminHome extends StatelessWidget {
                       }),
                   StreamBuilder<QuerySnapshot>(
                       stream: FirebaseFirestore.instance
-                          .collection('Events')
+                          .collection('Users')
+                          .where('type', isEqualTo: 'Organizer')
                           .snapshots(),
                       builder: (BuildContext context,
                           AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -152,8 +153,8 @@ class AdminHome extends StatelessWidget {
                                       width: 10,
                                     ),
                                     TextWidget(
-                                      text: 'Events',
-                                      fontSize: 18,
+                                      text: 'Event Organizer',
+                                      fontSize: 12,
                                       fontFamily: 'Bold',
                                     ),
                                   ],

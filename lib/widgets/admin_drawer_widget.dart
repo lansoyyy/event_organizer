@@ -1,13 +1,8 @@
 import 'package:attendance_checker/screens/admin/admin_events_screen.dart';
 import 'package:attendance_checker/screens/admin/admin_home.dart';
 import 'package:attendance_checker/screens/admin/admin_users_screen.dart';
-import 'package:attendance_checker/screens/auth/login_page.dart';
-import 'package:attendance_checker/screens/pages/about_us_page.dart';
-import 'package:attendance_checker/screens/pages/contact_us_page.dart';
-import 'package:attendance_checker/screens/pages/how_it_works_page.dart';
-import 'package:attendance_checker/widgets/logout_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:attendance_checker/widgets/text_widget.dart';
+import 'package:flutter/material.dart';
 
 import '../utils/colors.dart';
 
@@ -63,7 +58,7 @@ class AdminDrawerWidget extends StatelessWidget {
                     builder: (context) => const AdminEventsScreen()));
               },
               title: TextWidget(
-                text: 'Events',
+                text: 'Event Organizer',
                 fontSize: 14,
                 fontFamily: 'Bold',
               ),

@@ -49,7 +49,8 @@ class AdminEventsScreen extends StatelessWidget {
               ),
               StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
-                      .collection('Events')
+                      .collection('Users')
+                      .where('type', isEqualTo: 'Organizer')
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -87,7 +88,7 @@ class AdminEventsScreen extends StatelessWidget {
                             ),
                             DataColumn(
                               label: TextWidget(
-                                text: 'Date',
+                                text: 'Email',
                                 fontSize: 18,
                               ),
                             ),
@@ -114,7 +115,7 @@ class AdminEventsScreen extends StatelessWidget {
                                 ),
                                 DataCell(
                                   TextWidget(
-                                    text: data.docs[i]['date'],
+                                    text: data.docs[i]['email'],
                                     fontSize: 14,
                                   ),
                                 ),
@@ -122,7 +123,7 @@ class AdminEventsScreen extends StatelessWidget {
                                   IconButton(
                                     onPressed: () async {
                                       await FirebaseFirestore.instance
-                                          .collection('Events')
+                                          .collection('Users')
                                           .doc(data.docs[i].id)
                                           .delete();
                                     },

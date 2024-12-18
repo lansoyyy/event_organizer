@@ -50,6 +50,7 @@ class AdminusersScreen extends StatelessWidget {
               StreamBuilder<QuerySnapshot>(
                   stream: FirebaseFirestore.instance
                       .collection('Users')
+                      .where('type', isNotEqualTo: 'Organizer')
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
