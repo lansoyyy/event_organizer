@@ -165,7 +165,7 @@ class _LoginPageState extends State<LoginPage> {
       final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text, password: password.text);
 
-      if (user.user!.emailVerified) {
+      if (!user.user!.emailVerified) {
         await FirebaseFirestore.instance
             .collection('Users')
             .doc(user.user!.uid)
