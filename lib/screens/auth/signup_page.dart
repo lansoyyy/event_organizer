@@ -233,6 +233,11 @@ class _SignupPageState extends State<SignupPage> {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email.text, password: password.text);
 
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: email.text, password: password.text);
+
+      await FirebaseAuth.instance.currentUser!.sendEmailVerification();
+
       addUser(username.text, email.text, accname.text, accnumber.text,
           isClient ? 'Client' : 'Organizer');
 
@@ -242,7 +247,8 @@ class _SignupPageState extends State<SignupPage> {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
-      showToast("Registered Successfully!");
+      showToast(
+          "Registered Successfully! An email verification has been sent to your email");
 
       Navigator.pop(context);
     } on FirebaseAuthException catch (e) {

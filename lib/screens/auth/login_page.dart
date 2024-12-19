@@ -165,20 +165,28 @@ class _LoginPageState extends State<LoginPage> {
       final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email.text, password: password.text);
 
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(user.user!.uid)
-          .get()
-          .then((DocumentSnapshot documentSnapshot) {
-        if (documentSnapshot.exists) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-                builder: (context) => HomeScreen(
-                      type: documentSnapshot['type'],
-                    )),
-          );
-        }
-      });
+      if (user.user!.emailVerified) {
+        await FirebaseFirestore.instance
+            .collection('Users')
+            .doc(user.user!.uid)
+            .get()
+            .then((DocumentSnapshot documentSnapshot) {
+          if (documentSnapshot.exists) {
+            if (documentSnapshot['isVerified']) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                    builder: (context) => HomeScreen(
+                          type: documentSnapshot['type'],
+                        )),
+              );
+            } else {
+              showToast('Admin has not yet verified your account!');
+            }
+          }
+        });
+      } else {
+        showToast('Please verify your email!');
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showToast("No user found with that email.");
