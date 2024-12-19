@@ -120,17 +120,93 @@ class AdminEventsScreen extends StatelessWidget {
                                   ),
                                 ),
                                 DataCell(
-                                  IconButton(
-                                    onPressed: () async {
-                                      await FirebaseFirestore.instance
-                                          .collection('Users')
-                                          .doc(data.docs[i].id)
-                                          .delete();
-                                    },
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
+                                  Row(
+                                    children: [
+                                      Visibility(
+                                        visible: !data.docs[i]['isVerified'],
+                                        child: IconButton(
+                                          onPressed: () async {
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                      title: const Text(
+                                                        'Verification Confirmation',
+                                                        style: TextStyle(
+                                                            fontFamily: 'QBold',
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      content: const Text(
+                                                        'Are you sure you want to verify this user?',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                'QRegular'),
+                                                      ),
+                                                      actions: <Widget>[
+                                                        MaterialButton(
+                                                          onPressed: () =>
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop(true),
+                                                          child: const Text(
+                                                            'Close',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'QRegular',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                        MaterialButton(
+                                                          onPressed: () async {
+                                                            await FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'Users')
+                                                                .doc(data
+                                                                    .docs[i].id)
+                                                                .update({
+                                                              'isVerified': true
+                                                            });
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: const Text(
+                                                            'Continue',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'QRegular',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ));
+                                          },
+                                          icon: const Icon(
+                                            Icons.check_circle_outlined,
+                                            color: Colors.blue,
+                                          ),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        onPressed: () async {
+                                          await FirebaseFirestore.instance
+                                              .collection('Users')
+                                              .doc(data.docs[i].id)
+                                              .delete();
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ])
